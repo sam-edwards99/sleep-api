@@ -8,8 +8,9 @@ CREATE TABLE sleeper(
 CREATE TABLE sleep_session(
     id INT PRIMARY KEY,
     sleeper_id INT NOT NULL,
-    sleep_start TIMESTAMP NOT NULL,
-    sleep_end TIMESTAMP NOT NULL,
+    sleep_date DATE NOT NULL,
+    sleep_start TIME NOT NULL,
+    sleep_end TIME NOT NULL,
     wake_up_feeling feeling NOT NULL,
     CONSTRAINT sleeper_sleep_session_fkey FOREIGN KEY (sleeper_id)
         REFERENCES sleeper (id) MATCH SIMPLE
