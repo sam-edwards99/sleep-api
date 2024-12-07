@@ -2,10 +2,14 @@ package com.noom.interview.fullstack.sleep.controller;
 
 import com.noom.interview.fullstack.sleep.dto.SleepHistoryDTO;
 import com.noom.interview.fullstack.sleep.dto.SleepSessionDTO;
-import com.noom.interview.fullstack.sleep.entity.SleepSession;
 import com.noom.interview.fullstack.sleep.service.SleepSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user/{id}")
@@ -15,7 +19,7 @@ public class SleepSessionController {
 
     // get the previous sleep entry
     @GetMapping("/sleep")
-    public SleepSessionDTO getLastNightSleepDataByUserId(@PathVariable("id") Long userId) {
+    public SleepSessionDTO getLastSleepSessionByUserId(@PathVariable("id") Long userId) {
         return sleepSessionService.getSleepSession(userId);
     }
 
