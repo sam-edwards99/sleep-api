@@ -15,13 +15,13 @@ public class SleepSessionController {
 
     // get the previous sleep entry
     @GetMapping("/sleep")
-    public SleepSession getLastNightSleepDataByUserId(@PathVariable("id") Long userId) {
+    public SleepSessionDTO getLastNightSleepDataByUserId(@PathVariable("id") Long userId) {
         return sleepSessionService.getSleepSession(userId);
     }
 
     // create a new sleep entry
     @PostMapping("/sleep")
-    public SleepSession createNewSleepSession(@PathVariable("id") Long userId, @RequestBody SleepSessionDTO sleepSession) {
+    public SleepSessionDTO createNewSleepSession(@PathVariable("id") Long userId, @RequestBody SleepSessionDTO sleepSession) {
         return sleepSessionService.createNewSleepSession(userId, sleepSession);
     }
 

@@ -16,6 +16,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -28,14 +29,17 @@ public class SleepSessionService {
     private SleepSessionRepository sleepSessionRepository;
 
     // Fetch information about the last night's sleep
-    public SleepSession getSleepSession(Long userId) {
-        return sleepSessionRepository.findTopBySleeperIdOrderBySleepDateDesc(userId).orElseThrow(SleepSessionNotFoundException::new);
+    public SleepSessionDTO getSleepSession(Long userId) {
+        SleepSession sleepSession = sleepSessionRepository.findTopBySleeperIdOrderBySleepDateDesc(userId)
+                .orElseThrow(SleepSessionNotFoundException::new);
+        return SleepSessionMapper.toDTO(sleepSession);
     }
 
     // Create the sleep log for the last night
-    public SleepSession createNewSleepSession(Long userId, SleepSessionDTO sleepSession) {
-        sleepSession.setSleeperId(userId);
-        return sleepSessionRepository.save(SleepSessionMapper.toEntity(sleepSession));
+    public SleepSessionDTO createNewSleepSession(Long userId, SleepSessionDTO sleepSessionDTO) {
+        sleepSessionDTO.setSleeperId(userId);
+        SleepSession sleepSession = sleepSessionRepository.save(SleepSessionMapper.toEntity(sleepSessionDTO));
+        return SleepSessionMapper.toDTO(sleepSession);
     }
 
     // Get the 30 day sleep history data
@@ -80,7 +84,6 @@ public class SleepSessionService {
                     totalTimeInBed += Duration.between(startTimestamp.toLocalDateTime(), endTimestamp.toLocalDateTime()).toMillis();
                 }
                 else {
-                    Timestamp startTimestamp = new Timestamp(sleepSession.getSleepStart().getTime());
                     totalTimeInBed += Duration.between(sleepSession.getSleepStart().toLocalTime(), sleepSession.getSleepEnd().toLocalTime()).toMillis();
                 }
 
@@ -89,13 +92,14 @@ public class SleepSessionService {
             }
 
             // Average total time in bed
-            Time avgSleepDuration = new Time(totalTimeInBed / count);
+            Duration avgSleepDuration = Duration.ofMillis(totalTimeInBed / count);
 
             // The average time the user gets to bed and gets out of bed
-            Timestamp avgSleepEnd = new Timestamp(totalSleepEnd / count);
+            LocalTime avgSleepEnd = new Time(totalSleepEnd/count).toLocalTime();
+            new Timestamp(totalSleepEnd / count);
 
             // Synthesize this data from avg duration and avg end time to account for midnight skewing the average
-            Timestamp avgSleepStart = new Timestamp(avgSleepEnd.getTime() - avgSleepDuration.getTime());
+            LocalTime avgSleepStart = avgSleepEnd.minus(avgSleepDuration);
 
             return SleepHistoryDTO.builder()
                     .dateRangeStart(firstDayOfInterval)
