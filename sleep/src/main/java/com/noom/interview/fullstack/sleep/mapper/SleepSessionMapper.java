@@ -1,15 +1,12 @@
 package com.noom.interview.fullstack.sleep.mapper;
 
 import com.noom.interview.fullstack.sleep.dto.SleepSessionDTO;
-import com.noom.interview.fullstack.sleep.dto.UserDTO;
 import com.noom.interview.fullstack.sleep.entity.SleepSession;
-import com.noom.interview.fullstack.sleep.entity.User;
 
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Calendar;
 
 public class SleepSessionMapper {

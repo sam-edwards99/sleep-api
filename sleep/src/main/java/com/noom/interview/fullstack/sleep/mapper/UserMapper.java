@@ -5,14 +5,14 @@ import com.noom.interview.fullstack.sleep.entity.User;
 
 public class UserMapper {
 
-    public UserDTO toDto(User entity) {
+    public static UserDTO toDto(User entity) {
         return UserDTO.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .build();
     }
 
-    public User toEntity(UserDTO dto) {
+    public static User toEntity(UserDTO dto) {
         return User.builder()
                 .id(dto.getId())
                 .name(dto.getName())

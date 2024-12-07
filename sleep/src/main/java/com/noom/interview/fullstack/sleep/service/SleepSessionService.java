@@ -5,8 +5,10 @@ import com.noom.interview.fullstack.sleep.dto.SleepSessionDTO;
 import com.noom.interview.fullstack.sleep.entity.SleepSession;
 import com.noom.interview.fullstack.sleep.exception.SleepSessionNotFoundException;
 import com.noom.interview.fullstack.sleep.exception.SleepSessionNotFoundInLastThirtyDaysException;
+import com.noom.interview.fullstack.sleep.exception.UserNotFoundException;
 import com.noom.interview.fullstack.sleep.mapper.SleepSessionMapper;
 import com.noom.interview.fullstack.sleep.repository.SleepSessionRepository;
+import com.noom.interview.fullstack.sleep.repository.UserRepository;
 import com.noom.interview.fullstack.sleep.util.WakeUpFeeling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class SleepSessionService {
 
     @Autowired
     private SleepSessionRepository sleepSessionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     // Fetch information about the last night's sleep
     public SleepSessionDTO getSleepSession(Long userId) {
@@ -37,6 +41,8 @@ public class SleepSessionService {
 
     // Create the sleep log for the last night
     public SleepSessionDTO createNewSleepSession(Long userId, SleepSessionDTO sleepSessionDTO) {
+        // verify whether user id exists in db
+        userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         sleepSessionDTO.setSleeperId(userId);
         SleepSession sleepSession = sleepSessionRepository.save(SleepSessionMapper.toEntity(sleepSessionDTO));
         return SleepSessionMapper.toDTO(sleepSession);
@@ -45,6 +51,7 @@ public class SleepSessionService {
     // Get the 30 day sleep history data
     public SleepHistoryDTO getThirtyDaySleepHistory(Long userId) {
         Date thirtyDaysAgo = Date.valueOf(LocalDate.now().minusDays(30));
+        userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         List<SleepSession> sleepSessions = sleepSessionRepository.getSleepSessionsBySleeperIdAndSleepDateAfter(userId, thirtyDaysAgo);
         // throw exception if no sleep sessions are returned
         if (sleepSessions.isEmpty()) {

@@ -1,19 +1,21 @@
 package com.noom.interview.fullstack.sleep.entity;
 
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.noom.interview.fullstack.sleep.util.WakeUpFeeling;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 import java.sql.Time;
-import java.sql.Timestamp;
 
 @Entity
 @Table(name = "sleep_session")

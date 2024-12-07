@@ -7,9 +7,9 @@ import com.noom.interview.fullstack.sleep.util.WakeUpFeeling;
 import lombok.Builder;
 import lombok.Data;
 
-import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.Map;
 
 
