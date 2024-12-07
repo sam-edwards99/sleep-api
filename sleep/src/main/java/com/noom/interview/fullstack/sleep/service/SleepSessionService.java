@@ -1,7 +1,11 @@
 package com.noom.interview.fullstack.sleep.service;
 
 import com.noom.interview.fullstack.sleep.dto.SleepHistoryDTO;
+import com.noom.interview.fullstack.sleep.dto.SleepSessionDTO;
 import com.noom.interview.fullstack.sleep.entity.SleepSession;
+import com.noom.interview.fullstack.sleep.exception.SleepSessionNotFoundException;
+import com.noom.interview.fullstack.sleep.exception.SleepSessionNotFoundInLastThirtyDaysException;
+import com.noom.interview.fullstack.sleep.mapper.SleepSessionMapper;
 import com.noom.interview.fullstack.sleep.repository.SleepSessionRepository;
 import com.noom.interview.fullstack.sleep.util.WakeUpFeeling;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -20,32 +25,33 @@ import java.util.Map;
 @Service
 public class SleepSessionService {
 
-
     @Autowired
     private SleepSessionRepository sleepSessionRepository;
 
     // Fetch information about the last night's sleep
-    public SleepSession getSleepLogEntry(Long userId) {
-        return sleepSessionRepository.getTopBySleeperIdOrderBySleepDateDesc(userId);
+    public SleepSessionDTO getSleepSession(Long userId) {
+        SleepSession sleepSession = sleepSessionRepository.findTopBySleeperIdOrderBySleepDateDesc(userId)
+                .orElseThrow(SleepSessionNotFoundException::new);
+        return SleepSessionMapper.toDTO(sleepSession);
     }
 
     // Create the sleep log for the last night
-    public SleepSession createNewSleepLogEntry(Long userId, SleepSession sleepLogEntry) {
-        sleepLogEntry.setSleeperId(userId);
-        return sleepSessionRepository.save(sleepLogEntry);
+    public SleepSessionDTO createNewSleepSession(Long userId, SleepSessionDTO sleepSessionDTO) {
+        sleepSessionDTO.setSleeperId(userId);
+        SleepSession sleepSession = sleepSessionRepository.save(SleepSessionMapper.toEntity(sleepSessionDTO));
+        return SleepSessionMapper.toDTO(sleepSession);
     }
 
     // Get the 30 day sleep history data
     public SleepHistoryDTO getThirtyDaySleepHistory(Long userId) {
         Date thirtyDaysAgo = Date.valueOf(LocalDate.now().minusDays(30));
         List<SleepSession> sleepSessions = sleepSessionRepository.getSleepSessionsBySleeperIdAndSleepDateAfter(userId, thirtyDaysAgo);
-        System.out.println(sleepSessions.size());
+        // throw exception if no sleep sessions are returned
         if (sleepSessions.isEmpty()) {
-            return null;
+            throw new SleepSessionNotFoundInLastThirtyDaysException();
         } else {
-            Long totalTimeInBed = 0L;
             Long count = (long) sleepSessions.size();
-            Long totalSleepEnd = 0L, totalSleepStart = 0L;
+            Long totalSleepEnd = 0L, totalTimeInBed = 0L;
 
             // The range for which averages are shown
             Date firstDayOfInterval = sleepSessions.get(0).getSleepDate();
@@ -65,34 +71,35 @@ public class SleepSessionService {
 
                 // account for start time being after end time due to midnight
                 if(sleepSession.getSleepStart().after(sleepSession.getSleepEnd())) {
-                    Timestamp startDate = new Timestamp(sleepSession.getSleepStart().getTime());
-                    Timestamp endDate = new Timestamp(sleepSession.getSleepEnd().getTime());
+                    Timestamp startTimestamp = new Timestamp(sleepSession.getSleepStart().getTime());
+                    Timestamp endTimestamp = new Timestamp(sleepSession.getSleepEnd().getTime());
 
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(endDate.getTime());
+                    calendar.setTimeInMillis(endTimestamp.getTime());
 
-                    // Add one day to the Calendar
+                    // Add one day to end time so that time in bed is calculated accurately
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-                    // Create a new Timestamp from the updated Calendar
-                    endDate = new Timestamp(calendar.getTimeInMillis());
-
-                    totalTimeInBed += Duration.between(startDate.toLocalDateTime(), endDate.toLocalDateTime()).toMillis();
+                    endTimestamp = new Timestamp(calendar.getTimeInMillis());
+                    totalTimeInBed += Duration.between(startTimestamp.toLocalDateTime(), endTimestamp.toLocalDateTime()).toMillis();
                 }
                 else {
                     totalTimeInBed += Duration.between(sleepSession.getSleepStart().toLocalTime(), sleepSession.getSleepEnd().toLocalTime()).toMillis();
                 }
 
-                totalSleepStart += sleepSession.getSleepStart().getTime();
                 totalSleepEnd += sleepSession.getSleepEnd().getTime();
                 wakeUpFeelingMap.put(sleepSession.getWakeUpFeeling(), wakeUpFeelingMap.getOrDefault(sleepSession.getWakeUpFeeling(), 0) + 1);
             }
-            // The average time the user gets to bed and gets out of bed
-            Timestamp avgSleepStart = new Timestamp(totalSleepStart / count);
-            Timestamp avgSleepEnd = new Timestamp(totalSleepEnd / count);
 
             // Average total time in bed
-            Time avgSleepDuration = new Time(totalTimeInBed / count);
+            Duration avgSleepDuration = Duration.ofMillis(totalTimeInBed / count);
+
+            // The average time the user gets to bed and gets out of bed
+            LocalTime avgSleepEnd = new Time(totalSleepEnd/count).toLocalTime();
+            new Timestamp(totalSleepEnd / count);
+
+            // Synthesize this data from avg duration and avg end time to account for midnight skewing the average
+            LocalTime avgSleepStart = avgSleepEnd.minus(avgSleepDuration);
 
             return SleepHistoryDTO.builder()
                     .dateRangeStart(firstDayOfInterval)

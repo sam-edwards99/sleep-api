@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -19,8 +21,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-// Class
 public class SleepSession {
 
     @Id
@@ -29,7 +29,7 @@ public class SleepSession {
 
     private Long sleeperId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY:MM:dd:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd")
     private Date sleepDate;
 
     // The time in bed interval (Can use these to derive Total time in bed)
