@@ -1,6 +1,7 @@
 package com.noom.interview.fullstack.sleep.controller;
 
 import com.noom.interview.fullstack.sleep.dto.SleepHistoryDTO;
+import com.noom.interview.fullstack.sleep.dto.SleepSessionDTO;
 import com.noom.interview.fullstack.sleep.entity.SleepSession;
 import com.noom.interview.fullstack.sleep.service.SleepSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,13 @@ public class SleepSessionController {
     // get the previous sleep entry
     @GetMapping("/sleep")
     public SleepSession getLastNightSleepDataByUserId(@PathVariable("id") Long userId) {
-        return sleepSessionService.getSleepLogEntry(userId);
+        return sleepSessionService.getSleepSession(userId);
     }
 
     // create a new sleep entry
     @PostMapping("/sleep")
-    public SleepSession createNewSleepLogEntry(@PathVariable("id") Long userId, @RequestBody SleepSession entry) {
-        return sleepSessionService.createNewSleepLogEntry(userId, entry);
+    public SleepSession createNewSleepSession(@PathVariable("id") Long userId, @RequestBody SleepSessionDTO sleepSession) {
+        return sleepSessionService.createNewSleepSession(userId, sleepSession);
     }
 
     // get the 30 day sleep history data

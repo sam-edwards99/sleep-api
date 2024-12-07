@@ -9,11 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface SleepSessionRepository extends JpaRepository<SleepSession,Integer> {
     List<SleepSession> getSleepSessionsBySleeperIdAndSleepDateAfter(Long sleeperId, Date sleepDateAfter);
 
-    SleepSession getTopBySleeperIdOrderBySleepDateDesc(Long sleeperId);
+    Optional<SleepSession> findTopBySleeperIdOrderBySleepDateDesc(Long userId);
+
 }

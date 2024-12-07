@@ -1,12 +1,14 @@
 CREATE TYPE feeling AS ENUM ('BAD', 'OK', 'GOOD');
+CREATE CAST (character varying as feeling) WITH INOUT AS IMPLICIT;
+
 
 CREATE TABLE sleeper(
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE sleep_session(
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     sleeper_id INT NOT NULL,
     sleep_date DATE NOT NULL,
     sleep_start TIME NOT NULL,
