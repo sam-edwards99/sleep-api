@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class SleepSessionExceptionHandler {
 
+    // Handle Resource Not Found
     @ExceptionHandler({SleepSessionNotFoundException.class, SleepSessionNotFoundInLastThirtyDaysException.class})
     public ResponseEntity<ErrorResponse> handle(RuntimeException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
