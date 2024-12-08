@@ -1,7 +1,9 @@
+-- create custom type for wake up feeling
 CREATE TYPE feeling AS ENUM ('BAD', 'OK', 'GOOD');
+-- allow casting from String to custom type
 CREATE CAST (character varying as feeling) WITH INOUT AS IMPLICIT;
 
-
+-- user is a keyword so I named it sleeper. Not a great table name, but it's what I came up with :)
 CREATE TABLE sleeper(
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL

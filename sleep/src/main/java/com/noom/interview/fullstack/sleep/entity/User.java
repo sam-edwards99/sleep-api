@@ -12,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
+// simple user entity
 @Entity
 @Table(name = "sleeper")
 @Data

@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.Map;
 
-
+// DTO for returning 30 day sleep summary data
 @Data
 @Builder
 public class SleepHistoryDTO {

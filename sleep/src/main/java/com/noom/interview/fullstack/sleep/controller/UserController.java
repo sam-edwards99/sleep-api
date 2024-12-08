@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class UserController {
     @Autowired
@@ -24,13 +26,13 @@ public class UserController {
 
     // Create a User
     @PostMapping("/user")
-    public UserDTO createNewUser(@RequestBody UserDTO userDto) {
+    public UserDTO createNewUser(@Valid @RequestBody UserDTO userDto) {
         return userService.createUser(userDto);
     }
 
     // Update a User by Id
     @PutMapping("/user/{id}")
-    public UserDTO updateUserById(@PathVariable Long id, @RequestBody UserDTO userDto) {
+    public UserDTO updateUserById(@PathVariable Long id, @Valid @RequestBody UserDTO userDto) {
         return userService.updateUserById(id, userDto);
     }
 

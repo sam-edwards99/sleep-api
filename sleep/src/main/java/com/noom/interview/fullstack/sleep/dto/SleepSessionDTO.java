@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.noom.interview.fullstack.sleep.util.CustomDurationSerializer;
 import com.noom.interview.fullstack.sleep.util.WakeUpFeeling;
+import com.noom.interview.fullstack.sleep.validator.SleepDateConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Date;
 
+// DTO for a single sleep session
 @Data
 @AllArgsConstructor
 @Builder
@@ -21,16 +23,18 @@ public class SleepSessionDTO {
 
     private Long sleeperId;
 
-    @NotNull("Must include sleepDate")
+
+    @NotNull(message = "Must include sleepDate")
+    @SleepDateConstraint
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date sleepDate;
 
     // The time in bed interval (Can use these to derive Total time in bed)
-    @NotNull("Must include sleepStart")
+    @NotNull(message = "Must include sleepStart")
     @JsonFormat(pattern="HH:mm")
     private LocalTime sleepStart;
 
-    @NotNull("Must include sleepEnd")
+    @NotNull(message = "Must include sleepEnd")
     @JsonFormat(pattern="HH:mm")
     private LocalTime sleepEnd;
 
@@ -38,6 +42,6 @@ public class SleepSessionDTO {
     private Duration timeInBed;
 
     // How the user felt in the morning: one of [BAD, OK, GOOD]
-    @NotNull("Must include wakUpFeeling")
+    @NotNull(message = "Must include wakeUpFeeling")
     private WakeUpFeeling wakeUpFeeling;
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 import java.time.Duration;
 
+// Custom serializer. Converts Duration to "<hours>h<minutes>m" time format string
 public class CustomDurationSerializer extends JsonSerializer<Duration> {
     @Override
     public void serialize(Duration duration, JsonGenerator gen, SerializerProvider serializers) throws IOException {
