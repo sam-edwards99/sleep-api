@@ -9,6 +9,11 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Calendar;
 
+// Helper class for converting entities to DTOs and vice versa
+//      It wasn't strictly necessary to have both DTOs and Entities for this class for this small application
+//      but felt it was better practice to keep them separate as this allows the different layers of the application to be
+//      more loosely coupled
+
 public class SleepSessionMapper {
     public static SleepSessionDTO toDTO(SleepSession entity) {
         return SleepSessionDTO.builder()
@@ -32,6 +37,7 @@ public class SleepSessionMapper {
                 .build();
     }
 
+    // generates the timeInBed duration using the start and end fields for the DTO object
     private static Duration getTimeInBedFromSleepInterval(Time sleepStart, Time sleepEnd) {
         Timestamp startTimestamp = new Timestamp(sleepStart.getTime());
         Timestamp endTimestamp = new Timestamp(sleepEnd.getTime());

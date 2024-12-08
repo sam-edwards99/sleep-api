@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.noom.interview.fullstack.sleep.util.CustomDurationSerializer;
 import com.noom.interview.fullstack.sleep.util.WakeUpFeeling;
+import com.noom.interview.fullstack.sleep.validator.SleepDateConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Date;
 
+// DTO for a single sleep session
 @Data
 @AllArgsConstructor
 @Builder
@@ -21,7 +23,9 @@ public class SleepSessionDTO {
 
     private Long sleeperId;
 
+
     @NotNull(message = "Must include sleepDate")
+    @SleepDateConstraint
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date sleepDate;
 

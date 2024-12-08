@@ -26,6 +26,7 @@ public class SleepSessionController {
     }
 
     // create a new sleep entry
+    //      also enforce validation on the incoming request body
     @PostMapping("/sleep")
     public SleepSessionDTO createNewSleepSession(@PathVariable("id") Long userId, @Valid @RequestBody SleepSessionDTO sleepSession) {
         return sleepSessionService.createNewSleepSession(userId, sleepSession);

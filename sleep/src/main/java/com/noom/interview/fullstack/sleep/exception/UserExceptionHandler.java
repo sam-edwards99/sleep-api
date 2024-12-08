@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+// Handle Resource Not Found at the User level
 @ControllerAdvice
 public class UserExceptionHandler {
 

@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import java.sql.Date;
 import java.sql.Time;
 
+// entity for storing the sleep_session data
+//      the time in bed interval will be calculated from sleepStart and sleepEnd when converting to dto
 @Entity
 @Table(name = "sleep_session")
 @Data

@@ -1,3 +1,4 @@
+-- Just adding some test data for postman requests and manual testing
 INSERT INTO sleeper (name)
 VALUES ('Sam'),
        ('Kassidy'),
